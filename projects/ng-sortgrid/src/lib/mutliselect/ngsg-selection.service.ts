@@ -15,6 +15,7 @@ interface SelectionChange {
   key: string;
   item: Element;
   action: ChangeAction;
+  parentElement?: Element;
 }
 
 @Injectable({
@@ -47,7 +48,7 @@ export class NgsgSelectionService {
       this.classService.addSelectedClass(selectionChange.item);
       this.ngsgStore.addSelectedItem(selectionChange.key, {
         node: selectionChange.item,
-        originalIndex: NgsgElementsHelper.findIndex(selectionChange.item)
+        originalIndex: NgsgElementsHelper.findIndex(selectionChange.item, selectionChange.parentElement)
       });
     }
     if (selectionChange.action === ChangeAction.REMOVE) {
@@ -68,21 +69,22 @@ export class NgsgSelectionService {
     return merge(selectionKeyPressed, keyup);
   }
 
-  public selectElementIfNoSelection(group: string, dragedElement: Element): void {
+  public selectElementIfNoSelection(group: string, dragedElement: Element, parentElement?: Element): void {
     if (this.ngsgStore.hasSelectedItems(group)) {
       return;
     }
     this.ngsgStore.addSelectedItem(group, {
       node: dragedElement,
-      originalIndex: NgsgElementsHelper.findIndex(dragedElement)
+      originalIndex: NgsgElementsHelper.findIndex(dragedElement, parentElement)
     });
   }
 
-  public updateSelectedDragItem(key: string, item: Element, selected: boolean): void {
+  public updateSelectedDragItem(key: string, item: Element, selected: boolean, parentElement?: Element): void {
     this.selectionChange$.next({
       key,
       item,
-      action: selected ? ChangeAction.ADD : ChangeAction.REMOVE
+      action: selected ? ChangeAction.ADD : ChangeAction.REMOVE,
+      parentElement
     });
   }
 }

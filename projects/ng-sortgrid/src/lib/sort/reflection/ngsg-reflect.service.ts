@@ -11,13 +11,13 @@ export class NgsgReflectService {
   constructor(private ngsgStore: NgsgStoreService) {
   }
 
-  public reflectChanges(key: string, element: Element): any[] {
+  public reflectChanges(key: string, element: Element, parentElement?: Element): any[] {
     const items = this.ngsgStore.getItems(key);
     const selectedElements = this.ngsgStore.getSelectedItems(key);
     const selectedElementIndices = this.getSelectedElementsIndices(selectedElements);
     const selectedItems = this.getSelectedItems(items, selectedElementIndices);
     const sortedIndices = selectedElementIndices.sort((a, b) => a - b);
-    const dropIndex = this.findDropIndex(selectedElements, element);
+    const dropIndex = this.findDropIndex(selectedElements, element, parentElement);
 
     while (sortedIndices.length > 0) {
       items.splice(sortedIndices.pop(), 1);
@@ -46,11 +46,11 @@ export class NgsgReflectService {
     return selectedElements.map((selectedElement: NgsgDragelement) => selectedElement.originalIndex);
   }
 
-  private findDropIndex(selectedElements: NgsgDragelement[], element: Element): number {
+  private findDropIndex(selectedElements: NgsgDragelement[], element: Element, parentElement?: Element): number {
     if (this.isDropInSelection(selectedElements, element)) {
-      return NgsgElementsHelper.findIndex(selectedElements[0].node);
+      return NgsgElementsHelper.findIndex(selectedElements[0].node, parentElement);
     }
-    return NgsgElementsHelper.findIndex(element);
+    return NgsgElementsHelper.findIndex(element, parentElement);
   }
 
   private isDropInSelection(collection: NgsgDragelement[], dropElement: Element): boolean {

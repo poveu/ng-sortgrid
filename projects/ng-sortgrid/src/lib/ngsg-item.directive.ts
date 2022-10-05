@@ -32,6 +32,7 @@ const selector = '[ngSortgridItem]';
 export class NgsgItemDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() ngSortGridGroup = 'defaultGroup';
   @Input() ngSortGridItems: any[];
+  @Input() ngSortGridParent: HTMLElement;
   @Input() scrollPointTop: number;
   @Input() scrollPointBottom: number;
   @Input() scrollSpeed: number;
@@ -107,7 +108,7 @@ export class NgsgItemDirective implements OnInit, OnChanges, AfterViewInit, OnDe
     if (!this.occuredOnHost(event)) {
       return;
     }
-    this.selectionService.selectElementIfNoSelection(this.ngSortGridGroup, event.target);
+    this.selectionService.selectElementIfNoSelection(this.ngSortGridGroup, event.target, this.ngSortGridParent);
     this.classService.addActiveClass(event.target);
     this.sortService.initSort(this.ngSortGridGroup);
   }
@@ -117,7 +118,7 @@ export class NgsgItemDirective implements OnInit, OnChanges, AfterViewInit, OnDe
     if (!this.ngsgStore.hasSelectedItems(this.ngSortGridGroup)) {
       return;
     }
-    this.sortService.sort(this.el.nativeElement);
+    this.sortService.sort(this.el.nativeElement, this.ngSortGridParent);
   }
 
   @HostListener('dragover', ['$event'])
@@ -143,7 +144,7 @@ export class NgsgItemDirective implements OnInit, OnChanges, AfterViewInit, OnDe
     }
     const previousOrder = [...this.ngsgStore.getItems(this.ngSortGridGroup)];
     this.sortService.endSort();
-    const currentOrder = this.reflectService.reflectChanges(this.ngSortGridGroup, this.el.nativeElement);
+    const currentOrder = this.reflectService.reflectChanges(this.ngSortGridGroup, this.el.nativeElement, this.ngSortGridParent);
     this.sorted.next({previousOrder, currentOrder});
     this.ngsgStore.resetSelectedItems(this.ngSortGridGroup);
     this.ngsgEventService.dropped$.next(true);
@@ -152,11 +153,11 @@ export class NgsgItemDirective implements OnInit, OnChanges, AfterViewInit, OnDe
   @HostListener('click')
   clicked(): void {
     this.selected = !this.isItemCurrentlySelected();
-    this.selectionService.updateSelectedDragItem(this.ngSortGridGroup, this.el.nativeElement, this.selected);
+    this.selectionService.updateSelectedDragItem(this.ngSortGridGroup, this.el.nativeElement, this.selected, this.ngSortGridParent);
   }
 
   private isItemCurrentlySelected(): boolean {
-    const index = NgsgElementsHelper.findIndex(this.el.nativeElement);
+    const index = NgsgElementsHelper.findIndex(this.el.nativeElement, this.ngSortGridParent);
     return !!this.ngsgStore.getSelectedItems(this.ngSortGridGroup)
       .find(element => element.originalIndex === index);
   }

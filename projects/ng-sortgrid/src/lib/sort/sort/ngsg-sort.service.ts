@@ -23,8 +23,8 @@ export class NgsgSortService {
     this.dragElements = this.ngsgStore.getSelectedItems(group);
   }
 
-  public sort(dropElement: Element): void {
-    const hoverIndex = NgsgElementsHelper.findIndex(dropElement);
+  public sort(dropElement: Element, parentElement?: Element): void {
+    const hoverIndex = NgsgElementsHelper.findIndex(dropElement, parentElement);
     const el = this.getSibling(dropElement, this.dragIndex, hoverIndex);
 
     if (this.isDropInSelection(el)) {
@@ -34,7 +34,7 @@ export class NgsgSortService {
       const insertedNode = dropElement.parentNode.insertBefore(dragElement.node, el.node);
       this.classService.addPlaceHolderClass(insertedNode as Element);
     });
-    this.dragIndex = NgsgElementsHelper.findIndex(this.dragElements[0].node);
+    this.dragIndex = NgsgElementsHelper.findIndex(this.dragElements[0].node, parentElement);
   }
 
   public endSort(): void {
