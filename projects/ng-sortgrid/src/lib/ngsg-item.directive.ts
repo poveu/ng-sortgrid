@@ -108,6 +108,7 @@ export class NgsgItemDirective implements OnInit, OnChanges, AfterViewInit, OnDe
     if (!this.occuredOnHost(event)) {
       return;
     }
+    event.dataTransfer.effectAllowed = 'move';
     this.selectionService.selectElementIfNoSelection(this.ngSortGridGroup, event.target, this.ngSortGridParent);
     this.classService.addActiveClass(event.target);
     this.sortService.initSort(this.ngSortGridGroup);
