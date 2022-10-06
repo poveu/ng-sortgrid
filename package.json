@@ -1,6 +1,6 @@
 {
   "name": "ng-sortgrid",
-  "version": "0.0.0-development",
+  "version": "6.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -20,7 +20,8 @@
     "publish": "npm run publish:lib",
     "publish:demo": "npx angular-cli-ghpages --dir=./dist/ng-sortgrid-demo",
     "publish:lib": "cd dist/ng-sortgrid && npx semantic-release",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@angular/animations": "~13.2.4",
